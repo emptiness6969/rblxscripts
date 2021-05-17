@@ -2512,7 +2512,7 @@ function newSquare()
 end
 
 function newText()
-    local text = Drawing.new('Text')
+    local text = Drawing.new("Text")
 	text.Size = 15
 	text.Visible = true
 	text.Center = true 
