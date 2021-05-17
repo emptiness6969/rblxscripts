@@ -4,6 +4,126 @@
 	by Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)
 --]]
 
+syn_websocket_send = syn_websocket_send
+firesignal = firesignal
+makefolder = makefolder
+is_protosmasher_caller = is_protosmasher_caller
+clonefunction = clonefunction
+setrawmetatable = setrawmetatable 
+getrawmetatable = getrawmetatable
+getinstancefromstate = getinstancefromstate
+setfflag = setfflag
+getcallingscript = getcallingscript or get_calling_script
+getrenv = getrenv
+syn_crypt_b64_encode = syn_crypt_b64_encode
+newcclosure = newcclosure
+getspecialinfo = debug.getspecialinfo or getspecialinfo
+shared = shared
+decompile = decompile
+loadstring = loadstring
+getprotos = debug.getprotos or getprotos
+hookfunction = hookfunction or hookfunc
+isfile = isfile
+getproto = debug.getproto or getproto
+print = print
+isrbxactive = isrbxactive
+rconsoleinfo = rconsoleinfo
+make_readonly = make_readonly
+getstack = debug.getstack or getstack
+rconsolename = rconsolename
+unlockmodulescript = unlockmodulescript
+getupvalue = debug.getupvalue or getupvalue
+setproto = debug.setproto or setproto
+mouse1click = mouse1click
+setupvalue = debug.setupvalue or setupvalue
+getscripts = getscripts or get_scripts
+rconsoleerr = rconsoleerr
+dumpstring = dumpstring
+keypress = keypress
+syn_crypt_derive = syn_crypt_derive
+rconsoleclear = rconsoleclear
+is_redirection_enabled = is_redirection_enabled
+syn_context_set = syn_context_set
+isreadonly = isreadonly or function(tbl) return is_readonly; end;
+mouse2click = mouse2click
+getinfo = debug.getinfo or getinfo
+writefile = writefile
+loadfile = loadfile
+getconstant = debug.getconstant or getconstant
+is_synapse_function = is_synapse_function or issynapsefunction
+getconnections = getconnections
+checkcaller = checkcaller
+setreadonly = setreadonly or function(tbl, val) if val then make_readonly(tbl); else make_writeable(tbl); end; end;
+syn_crypt_encrypt = syn_crypt_encrypt
+warn = warn
+validfgwindow = validfgwindow
+saveinstance = saveinstance
+getinstances = getinstances or get_instances
+getconstants = debug.getconstants or getconstants
+getloadedmodules = getloadedmodules or get_loaded_modules
+require = require
+getnilinstances = getnilinstances or get_nil_instances
+setclipboard = setclipboard
+delfile = delfile
+firetouchinterest = firetouchinterest
+mouse1release = mouse1release
+syn_websocket_close = syn_websocket_close
+setnamecallmethod = setnamecallmethod
+rconsoleprint = rconsoleprint
+getsenv = getsenv
+messagebox = messagebox
+replaceclosure = replaceclosure
+delfolder = delfolder
+keyrelease = keyrelease
+isfolder = isfolder
+XPROTECT = XPROTECT or xprotect
+getcallstack = getcallstack
+appendfile = appendfile
+syn_crypt_hash = syn_crypt_hash
+syn_websocket_connect = syn_websocket_connect
+is_protosmasher_closure = is_protosmasher_closure or isprotosmasherclosure
+mousemoverel = mousemoverel
+printconsole = printconsole
+listfiles = listfiles or list_files
+islclosure = islclosure or is_lclosure
+rconsolewarn = rconsolewarn
+getstateenv = getstateenv
+syn_crypt_decrypt = syn_crypt_decrypt
+readfile = readfile
+mousescroll = mousescroll
+mousemoveabs = mousemoverel
+setconstant = debug.setconstant or setconstant
+getpropvalue = getpropvalue
+syn_crypt_b64_decode = syn_crypt_b64_decode
+mouse2release = mouse2release
+mouse2press = mouse2press
+getgc = getgc
+getstates = getstates
+getpointerfromstate = getpointerfromstate
+mouse1press = mouse1press
+getnamecallmethod = getnamecallmethod or get_namecall_method
+setpropvalue = setpropvalue
+rconsoleinputasync = rconsoleinputasync
+syn_crypt_random = syn_crypt_random
+fireclickdetector = fireclickdetector
+rconsoleinput = rconsoleinput
+getmenv = getmenv
+getreg = getreg or debug.getregistry or getregistry
+getgenv = getgenv
+messageboxasync = messageboxasync
+getupvalues = getupvalues or debug.getupvalues or getupvalues
+setstack = setstack or debug.setstack or setstack
+syn_context_get = syn_context_get
+syn_isactive = syn_isactive
+profilebegan = debug.profilebegin or profilebegin
+traceback = debug.traceback or traceback
+setmetatable = debug.setmetatable or setmetatable
+getmetatable = debug.getmetatable or getmetatable
+getfenv = debug.getfenv or getfenv
+setupvaluename = debug.setupvaluename or setupvaluename
+profileend = debug.profileend or profileend
+validlevel = debug.validlevel or validlevel
+
 local ui_options = {
 	main_color = Color3.fromRGB(41, 74, 122),
 	min_size = Vector2.new(400, 300),
@@ -2032,6 +2152,7 @@ assert(setreadonly and make_writeable, "Exploit unsupported")
 
 _G.Config = {}
 
+_G.Config.aimbotEnabled = false
 _G.Config.silentAimEnabled = false
 _G.Config.silentAimHitbox = "Head"
 _G.Config.silentAimFov = 1
@@ -2042,6 +2163,7 @@ _G.Config.infiniteVelocity = false
 _G.Config.noRecoil = false
 
 _G.Config.visualsEnabled = false
+_G.Config.showBoxes = false
 _G.Config.showHeadDots = false
 _G.Config.showFovCircle = false
 _G.Config.fovCircleTransparency = 0
@@ -2071,7 +2193,7 @@ local gunModsTab = mainWindow:AddTab("Gun Mods")
 local visualsTab = mainWindow:AddTab("Visuals")
 local Misc = mainWindow:AddTab("Miscellaneous")
 
-aimbotTab:AddSwitch("Silent aim", function(bool)
+aimbotTab:AddSwitch("Silent Aim", function(bool)
     _G.Config.silentAimEnabled = bool
 end)
 
@@ -2113,8 +2235,16 @@ end)
 
 local espFolder = visualsTab:AddFolder("ESP")
 
+espFolder:AddSwitch("Show boxes", function(bool)
+    _G.Config.showBoxes = bool
+end)
+
 espFolder:AddSwitch("Show head dots", function(bool)
     _G.Config.showHeadDots = bool
+end)
+
+espFolder:AddSwitch("Show names", function(bool)
+    _G.Config.showNames = bool
 end)
 
 espFolder:AddSwitch("Show FOV circle", function(bool)
@@ -2193,16 +2323,20 @@ local Camera = workspace.CurrentCamera
 local mouse = localPlayer:GetMouse()
 local viewportSize = Camera.ViewportSize
 local screenCenter = Vector2.new(viewportSize.X/2, viewportSize.Y/2)
+local WorldToViewportPoint = function(worldPoint) return Camera:WorldToViewportPoint(worldPoint) end
 
 local espObjects = {}
 local viewmodelData = {}
+local objectOverrideData = {}
+
+local closestPlayer = nil
 
 function getClosestPlayer()
     local closestPlayer, shortestDistance = nil, math.huge
 
     for i,v in ipairs(Players:GetPlayers()) do
         if v ~= localPlayer and v.Team ~= localPlayer.Team and  playerAlive(v, true) then
-            local pos = Camera:WorldToViewportPoint(v.Character[_G.Config.silentAimHitbox].Position)
+            local pos = WorldToViewportPoint(v.Character[_G.Config.silentAimHitbox].Position)
             local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
 
             if magnitude < shortestDistance and magnitude < _G.Config.silentAimFov then
@@ -2216,26 +2350,86 @@ function getClosestPlayer()
 end
 
 function updateESP()
-	if _G.Config.visualsEnabled and _G.Config.showHeadDots then
+	if _G.Config.visualsEnabled then
 		for i,v in ipairs(Players:GetPlayers()) do
 			if v ~= localPlayer and v.Team ~= localPlayer.Team then
-				if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") then
+				if playerAlive(v, true) then
 					if v.Team ~= localPlayer.Team then
-						local pos, onscreen = Camera:WorldToViewportPoint(v.Character.Head.Position)
-						local circle = espObjects[v] or newCircle()
+						local head = v.Character.Head
+						local hrp = v.Character.HumanoidRootPart
 
-						circle.Transparency = 1 - _G.Config.espHeadDotsTransparency
-						circle.Position = Vector2.new(pos.X, pos.Y)
-						circle.Radius = 800 / pos.Z
-						circle.Filled = true
-						circle.Visible = onscreen
-						circle.Color = _G.Config.espHeadDotsColor
+						local headPos, onScreen1 = WorldToViewportPoint(head.Position)
+						local hrpPos, onScreen2 = WorldToViewportPoint(hrp.Position)
+						local legPos, onScreen3 = WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+
+						espObjects[v] = espObjects[v] or {}
 						
-						espObjects[v] = circle
+						if _G.Config.showHeadDots then
+							local circle = espObjects[v].headDot or newCircle()
+							circle.Transparency = 1 - _G.Config.espHeadDotsTransparency
+							circle.Position = Vector2.new(headPos.X, headPos.Y)
+							circle.Radius = 750 / headPos.Z
+							circle.Filled = true
+							circle.Visible = onScreen1
+							circle.Color = _G.Config.espHeadDotsColor
+
+							espObjects[v].headDot = circle
+						else
+							if espObjects[v].headDot then
+								espObjects[v].headDot:Remove()
+								espObjects[v].headDot = nil
+							end
+						end
+						
+						if _G.Config.showNames and onScreen1 then
+							local text = espObjects[v].name or newText()
+							text.Visible = onScreen1
+							text.Position = Vector2.new(headPos.X, headPos.Y - (750 / headPos.Z + text.TextBounds.Y))
+							text.Text = v.Name
+
+							espObjects[v].name = text
+						else
+							if espObjects[v].name then
+								espObjects[v].name:Remove()
+								espObjects[v].name = nil
+							end
+						end
+
+						if _G.Config.showBoxes and onScreen2 then
+							local square = espObjects[v].box or newSquare()
+							square.Visible = onScreen1
+							square.Position = Vector2.new(hrpPos.X - square.Size.X / 2, hrpPos.Y - square.Size.Y / 2)
+							square.Size = Vector2.new(1500 / headPos.Z, headPos.Y - legPos.Y)
+
+							espObjects[v].box = square
+						else
+							if espObjects[v].box then
+								espObjects[v].box:Remove()
+								espObjects[v].box = nil
+							end
+						end
+						
+						if  _G.Config.showFovCircle then
+							local circle = espObjects[v].fovCircle or newCircle()
+							circle.Visible = true
+							circle.Transparency = 1 - _G.Config.fovCircleTransparency
+							circle.Radius = _G.Config.silentAimFov
+							circle.Position = screenCenter
+							circle.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+
+							espObjects[v].fovCircle = circle
+						else
+							if espObjects[v].fovCircle then
+								espObjects[v].fovCircle:Remove()
+								espObjects[v].fovCircle = nil
+							end
+						end
 					end
 				else
 					if espObjects[v] then
-						espObjects[v]:Remove()
+						for i2,v2 in pairs(espObjects[v]) do
+							v2:Remove()
+						end
 						espObjects[v] = nil
 					end
 				end
@@ -2243,7 +2437,9 @@ function updateESP()
 		end
 	else
 		for i,v in pairs(espObjects) do
-			v:Remove()
+			for i2,v2 in pairs(v) do
+				v2:Remove()
+			end
 			espObjects[i] = nil
 		end
 	end
@@ -2259,8 +2455,6 @@ function playerAlive(player, healthCheck)
 	return false
 end
 
-local objectOverrideData = {}
-
 function copyTable(table)
 	local new = {}
 	for i,v in pairs(table) do
@@ -2268,8 +2462,10 @@ function copyTable(table)
 	end
 	return new
 end	
+
 function overrideObject(object, table, redo)
 	redo = redo or false
+
 	if redo then
 		if objectOverrideData[object] then
 			for i,v in pairs(objectOverrideData[object]) do
@@ -2304,6 +2500,28 @@ function newCircle()
     return circle
 end
 
+function newSquare()
+	local square = Drawing.new("Square")
+	square.Visible = true
+	square.Color = Color3.new(1, 0, 0)
+	square.Thickness = 1
+	square.Transparency = 1
+	square.Filled = false
+	
+	return square
+end
+
+function newText()
+    local text = Drawing.new('Text')
+	text.Size = 15
+	text.Visible = true
+	text.Center = true 
+	text.Font = 2
+	text.Color = Color3.fromRGB(255, 255, 255)
+
+    return text
+end
+
 Players.PlayerRemoving:Connect(function(player)
     if espObjects[player] and type(espObjects[player]) == "table" and espObjects[player].Remove then
         espObjects[player]:Remove()
@@ -2311,18 +2529,17 @@ Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
-local circle = newCircle()
-local closestPlayer = nil
-
 
 local client = {}
 for i,v in pairs(getgc(true)) do
 	if type(v) == "table" then
 		if rawget(v, "FireServer") and rawget(v, "InvokeServer") then
 			client.network = v
+
 			local __oldFireServer = v.FireServer
 			v.FireServer = function(self, ...)
 				local args = {...}
+
 				if args[1] == "fallDamage" and _G.Config.noFallDamage then
 					return
 				elseif args[1] == "banUser" then
@@ -2355,9 +2572,11 @@ spawn(function()
 					if _G.Config.noRecoil then
 						v.recoil = 0
 					end
+
 					if _G.Config.infiniteRange then
 						v.range = 9e9
 					end
+
 					if _G.Config.infiniteVelocity then
 						v.velocity = 9e9
 					end
@@ -2369,22 +2588,13 @@ spawn(function()
 end)
 
 spawn(function()
-    while true do
+    game:GetService("RunService").Heartbeat:Connect(function()
         if _G.Config.silentAimEnabled then
             closestPlayer = getClosestPlayer()
         end
 
-        if _G.Config.visualsEnabled and _G.Config.showFovCircle then
-			circle.Visible = true
-            circle.Transparency = 1 - _G.Config.fovCircleTransparency
-            circle.Radius = _G.Config.silentAimFov
-            circle.Position = screenCenter
-            circle.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-		else
-			circle.Visible = false
-        end
-
         updateESP()
+
         if _G.Config.visualsEnabled and _G.Config.viewmodelEnabled then
 			if playerAlive(localPlayer, true) and localPlayer.Character:FindFirstChild("RA") and localPlayer.Character:FindFirstChild("LA") then
 				local weaponsOverride = {
@@ -2485,12 +2695,12 @@ spawn(function()
 				end
 			end
         end
-        wait()
-    end
+    end)
 end)
 
 local mt = getrawmetatable(game)
 local __oldNamecall = mt.__namecall
+
 if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
 
 mt.__namecall = newcclosure(function(self, ...)
@@ -2511,12 +2721,18 @@ for i,v in pairs(getgc(true)) do
 	if type(v) == "function" and not is_synapse_function(v) then
 		if getinfo(v).numparams == 5 then
 		    local a = {}
+
 		    for i2,v2 in pairs(getconstants(v)) do
-		        if v2 == "ToWorldSpace" or v2 == "ToObjectSpace" or v2 == "WorldCFrame" then
-		            a[#a + 1] = v2
+		        if v2 == "ToWorldSpace" then
+		            a[1] = v2
+				elseif v2 == "ToObjectSpace" then
+					a[2] = v2
+				elseif v2 == "WorldCFrame" then
+					a[3] = v2
                 end
 		    end
-		    if a[2] == "ToWorldSpace" and a[3] == "ToObjectSpace" and a[1] == "WorldCFrame" then
+
+		    if a[1] == "ToWorldSpace" and a[2] == "ToObjectSpace" and a[3] == "WorldCFrame" then
 		        local __oldViewmodel
 		        __oldViewmodel = hookfunction(v, function(...)
 		            local args = {...}
@@ -2525,7 +2741,7 @@ for i,v in pairs(getgc(true)) do
 						local cf = CFrame.new(math.rad(_G.Config.viewmodelOffsetX-90), math.rad(_G.Config.viewmodelOffsetY-90), math.rad(_G.Config.viewmodelOffsetZ-90))
 						args[1] = args[1] * cf
 					end
-					
+
 		            return __oldViewmodel(unpack(args))
 		        end)
 		    end
