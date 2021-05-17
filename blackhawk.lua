@@ -2433,6 +2433,13 @@ function updateESP()
 						espObjects[v] = nil
 					end
 				end
+			else
+				if espObjects[v] then
+					for i2,v2 in pairs(espObjects[v]) do
+						v2:Remove()
+					end
+					espObjects[v] = nil
+				end
 			end
 		end
 	else
