@@ -1,7 +1,3 @@
-getgenv().playername = game:GetService("Players").LocalPlayer.Name -- username 
-getgenv().newname = "abdullahgamer1345" -- new username
-getgenv().newpfp = 1752170308 -- new avatar
-
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
