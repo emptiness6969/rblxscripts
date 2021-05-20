@@ -57,6 +57,12 @@ if GUI then
                 end
             end)
             
+            v.Victim:GetPropertyChangedSignal("Text"):Connect(function()
+                if string.find(v.Victim.Text, getgenv().newname) then
+                    v.Outline.Visible = true
+                end
+            end)
+            
             v.Outline:GetPropertyChangedSignal("Visible"):Connect(function()
                 if string.find(v.Killer.Text, getgenv().newname) or string.find(v.Victim.Text, getgenv().newname) then
                     v.Outline.Visible = true
