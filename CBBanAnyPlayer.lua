@@ -1,3 +1,6 @@
+getgenv().ExploiterName = "hexhub_22kO43" -- player to spoof
+getgenv().PlayerName = "deadxd2020" -- target username
+getgenv().CB_Pin = "rbxassetid://4434228836" -- spoof a pin
 
 -- // initialize
 
@@ -119,6 +122,10 @@ if GUI then
         if v.Name == "CTFrame" or v.Name == "TFrame" then
             repeat game:GetService("RunService").Heartbeat:Wait() until v.player.Text ~= "PLAYER"
             if (string.find(v.player.Text, getgenv().ExploiterName) or string.find(v.player.Text, getgenv().PlayerName)) and v:FindFirstChild("Pin") then
+                if not rawget(spoofed, v) then
+                    table.insert(spoofed, v)
+                end
+                
                 v.Pin.Image = getgenv().CB_Pin or ""
             end
         end
