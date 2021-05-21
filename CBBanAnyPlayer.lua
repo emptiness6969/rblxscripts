@@ -21,15 +21,17 @@ end
 
 for i,v in pairs(game:GetDescendants()) do
     if v:IsA("TextLabel") or v:IsA("TextButton") then
-        if not rawget(spoofed, v) then
-            table.insert(spoofed, v)
-        end
+        if string.find(tostring(v.Text), getgenv().ExploiterName) then
+            if not rawget(spoofed, v) then
+                table.insert(spoofed, v)
+            end
 
-        for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Text"))) do
-            v2:Disable()
-        end
-        for i2,v2 in pairs(getconnections(v.Changed)) do
-            v2:Disable()
+            for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Text"))) do
+                v2:Disable()
+            end
+            for i2,v2 in pairs(getconnections(v.Changed)) do
+                v2:Disable()
+            end
         end
 
         v.Text = string.gsub(v.Text, getgenv().ExploiterName, getgenv().PlayerName)
@@ -41,15 +43,17 @@ end
 
 game.DescendantAdded:Connect(function(v)
     if v:IsA("TextLabel") or v:IsA("TextButton") then
-        if not rawget(spoofed, v) then
-            table.insert(spoofed, v)
-        end
+        if string.find(tostring(v.Text), getgenv().ExploiterName) then
+            if not rawget(spoofed, v) then
+                table.insert(spoofed, v)
+            end
 
-        for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Text"))) do
-            v2:Disable()
-        end
-        for i2,v2 in pairs(getconnections(v.Changed)) do
-            v2:Disable()
+            for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Text"))) do
+                v2:Disable()
+            end
+            for i2,v2 in pairs(getconnections(v.Changed)) do
+                v2:Disable()
+            end
         end
 
         v:GetPropertyChangedSignal("Text"):Connect(function()
@@ -73,7 +77,8 @@ mt.__index = newcclosure(function(self, k)
                 if self.Name == "Pin" then
                     return oldPin
                 end
-                return string.gsub(__oldIndex(self, k), playerId, exploiterId)
+                local x = string.gsub(string.gsub(__oldIndex(self, k), playerId, exploiterId), getgenv().PlayerName, getgenv().ExploiterName)
+                return x
             end
         end
     end
@@ -126,6 +131,13 @@ if GUI then
             if (string.find(v.player.Text, getgenv().ExploiterName) or string.find(v.player.Text, getgenv().PlayerName)) and v:FindFirstChild("Pin") then
                 if not rawget(spoofed, v) then
                     table.insert(spoofed, v)
+
+                    for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Image"))) do
+                        v2:Disable()
+                    end
+                    for i2,v2 in pairs(getconnections(v.Changed)) do
+                        v2:Disable()
+                    end
                 end
                 if not oldPin then
                     oldPin = v.Pin.Image
