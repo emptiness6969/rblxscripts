@@ -2331,6 +2331,8 @@ local objectOverrideData = {}
 
 local closestPlayer = nil
 
+--setmetatable(espObjects, {__mode = "ksv"})
+
 function getClosestPlayer()
     local closestPlayer, shortestDistance = nil, math.huge
 
@@ -2354,100 +2356,90 @@ function updateESP()
 		for i,v in ipairs(Players:GetPlayers()) do
 			if v ~= localPlayer and v.Team ~= localPlayer.Team then
 				if playerAlive(v, true) then
-					if v.Team ~= localPlayer.Team then
-						local head = v.Character.Head
-						local hrp = v.Character.HumanoidRootPart
+					espObjects[v] = espObjects[v] or {}
 
-						local headPos, onScreen1 = WorldToViewportPoint(head.Position)
-						local hrpPos, onScreen2 = WorldToViewportPoint(hrp.Position)
-						local legPos, onScreen3 = WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+					local head = v.Character.Head
+					local hrp = v.Character.HumanoidRootPart
 
-						espObjects[v] = espObjects[v] or {}
+					local headPos, onScreen1 = WorldToViewportPoint(head.Position)
+					local hrpPos, onScreen2 = WorldToViewportPoint(hrp.Position)
+					local legPos, onScreen3 = WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+					
+					if _G.Config.showHeadDots then
+						espObjects[v].headDot = espObjects[v].headDot or newCircle()
+						local dot = espObjects[v].headDot
 						
-						if _G.Config.showHeadDots then
-							local circle = espObjects[v].headDot or newCircle()
-							circle.Transparency = 1 - _G.Config.espHeadDotsTransparency
-							circle.Position = Vector2.new(headPos.X, headPos.Y)
-							circle.Radius = 750 / headPos.Z
-							circle.Filled = true
-							circle.Visible = onScreen1
-							circle.Color = _G.Config.espHeadDotsColor
-
-							espObjects[v].headDot = circle
-						else
-							if espObjects[v].headDot then
-								espObjects[v].headDot:Remove()
-								espObjects[v].headDot = nil
-							end
+						dot.Transparency = 1 - _G.Config.espHeadDotsTransparency
+						dot.Position = Vector2.new(headPos.X, headPos.Y)
+						dot.Radius = 750 / headPos.Z
+						dot.Filled = true
+						dot.Visible = onScreen1
+						dot.Color = _G.Config.espHeadDotsColor
+					else
+						if espObjects[v].headDot then
+							espObjects[v].headDot:Remove()
+							espObjects[v].headDot = nil
 						end
-						
-						if _G.Config.showNames and onScreen1 then
-							local text = espObjects[v].name or newText()
-							text.Visible = onScreen1
-							text.Position = Vector2.new(headPos.X, headPos.Y - (750 / headPos.Z + text.TextBounds.Y))
-							text.Text = v.Name
+					end
+					
+					if _G.Config.showNames then
+						espObjects[v].name = espObjects[v].name or newText()
+						local text = espObjects[v].name
 
-							espObjects[v].name = text
-						else
-							if espObjects[v].name then
-								espObjects[v].name:Remove()
-								espObjects[v].name = nil
-							end
+						text.Visible = onScreen1
+						text.Position = Vector2.new(headPos.X, headPos.Y - (750 / headPos.Z + text.TextBounds.Y))
+						text.Text = v.Name
+					else
+						if espObjects[v].name then
+							espObjects[v].name:Remove()
+							espObjects[v].name = nil
 						end
+					end
 
-						if _G.Config.showBoxes and onScreen2 then
-							local square = espObjects[v].box or newSquare()
-							square.Visible = onScreen1
-							square.Position = Vector2.new(hrpPos.X - square.Size.X / 2, hrpPos.Y - square.Size.Y / 2)
-							square.Size = Vector2.new(1500 / headPos.Z, headPos.Y - legPos.Y)
+					if _G.Config.showBoxes then
+						espObjects[v].box = espObjects[v].box or newSquare()
+						local square = espObjects[v].box
 
-							espObjects[v].box = square
-						else
-							if espObjects[v].box then
-								espObjects[v].box:Remove()
-								espObjects[v].box = nil
-							end
+						square.Visible = onScreen1
+						square.Position = Vector2.new(hrpPos.X - square.Size.X / 2, hrpPos.Y - square.Size.Y / 2)
+						square.Size = Vector2.new(1500 / headPos.Z, headPos.Y - legPos.Y)
+					else
+						if espObjects[v].box then
+							espObjects[v].box:Remove()
+							espObjects[v].box = nil
 						end
-						
-						if  _G.Config.showFovCircle then
-							local circle = espObjects[v].fovCircle or newCircle()
-							circle.Visible = true
-							circle.Transparency = 1 - _G.Config.fovCircleTransparency
-							circle.Radius = _G.Config.silentAimFov
-							circle.Position = screenCenter
-							circle.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+					end
+					
+					if _G.Config.showFovCircle then
+						espObjects[v].fovCircle = espObjects[v].fovCircle or newCircle()
+						local circle = espObjects[v].fovCircle
 
-							espObjects[v].fovCircle = circle
-						else
-							if espObjects[v].fovCircle then
-								espObjects[v].fovCircle:Remove()
-								espObjects[v].fovCircle = nil
-							end
+						circle.Visible = true
+						circle.Transparency = 1 - _G.Config.fovCircleTransparency
+						circle.Radius = _G.Config.silentAimFov
+						circle.Position = screenCenter
+						circle.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+					else
+						if espObjects[v].fovCircle then
+							espObjects[v].fovCircle:Remove()
+							espObjects[v].fovCircle = nil
 						end
 					end
 				else
 					if espObjects[v] then
-						for i2,v2 in pairs(espObjects[v]) do
+						for i2, v2 in pairs(espObjects[v]) do
 							v2:Remove()
 						end
 						espObjects[v] = nil
 					end
 				end
-			else
-				if espObjects[v] then
-					for i2,v2 in pairs(espObjects[v]) do
-						v2:Remove()
-					end
-					espObjects[v] = nil
-				end
 			end
 		end
 	else
 		for i,v in pairs(espObjects) do
-			for i2,v2 in pairs(v) do
+			for i2, v2 in pairs(v) do
 				v2:Remove()
 			end
-			espObjects[i] = nil
 		end
 	end
 end
