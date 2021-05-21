@@ -2368,7 +2368,7 @@ function updateESP()
 					if _G.Config.showHeadDots then
 						espObjects[v].headDot = espObjects[v].headDot or newCircle()
 						local dot = espObjects[v].headDot
-						
+
 						dot.Transparency = 1 - _G.Config.espHeadDotsTransparency
 						dot.Position = Vector2.new(headPos.X, headPos.Y)
 						dot.Radius = 750 / headPos.Z
@@ -2436,9 +2436,13 @@ function updateESP()
 			end
 		end
 	else
-		for i,v in pairs(espObjects) do
-			for i2, v2 in pairs(v) do
-				v2:Remove()
+		if espObjects then
+			for i, v in pairs(espObjects) do
+				for i2, v2 in pairs(v) do
+					v2:Remove()
+				end
+
+				espObjects[v] = nil
 			end
 		end
 	end
@@ -2522,8 +2526,10 @@ function newText()
 end
 
 Players.PlayerRemoving:Connect(function(player)
-    if espObjects[player] and type(espObjects[player]) == "table" and espObjects[player].Remove then
-        espObjects[player]:Remove()
+    if espObjects[player] then
+        for i,v in pairs(espObjects[player]) do
+			v:Remove()
+		end
         espObjects[player] = nil
     end
 end)
