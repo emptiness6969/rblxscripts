@@ -113,7 +113,7 @@ mt.__newindex = newcclosure(function(self, k, v)
                 oldPin = __oldIndex(self, "Image")
             end
 
-            __oldNewIndex(self, "Image", getgenv().CB_Pin or GUI.Spectate.PlayerBox.PlayerPin.Image)
+            __oldNewIndex(self, "Image", getgenv().CB_Pin or oldPin)
             __oldNewIndex(self, "Visible", getgenv().CB_Pin and true or false)
             return
         end
@@ -127,12 +127,15 @@ if setreadonly then setreadonly(mt, true) else make_readonly(mt) end
 if GUI then
     GUI.Scoreboard.DescendantAdded:Connect(function(v)
         if v.Name == "CTFrame" or v.Name == "TFrame" then
-            repeat game:GetService("RunService").Heartbeat:Wait() until v.player.Text ~= "PLAYER"
+            repeat game:GetService("RunService").RenderStepped:Wait() until v.player.Text ~= "PLAYER"
             if (string.find(v.player.Text, getgenv().ExploiterName) or string.find(v.player.Text, getgenv().PlayerName)) and v:FindFirstChild("Pin") then
                 if not rawget(spoofed, v) then
                     table.insert(spoofed, v)
 
                     for i2,v2 in pairs(getconnections(v.Pin:GetPropertyChangedSignal("Image"))) do
+                        v2:Disable()
+                    end
+                    for i2,v2 in pairs(getconnections(v.Pin:GetPropertyChangedSignal("Visible"))) do
                         v2:Disable()
                     end
                     for i2,v2 in pairs(getconnections(v.Changed)) do
@@ -143,7 +146,13 @@ if GUI then
                     oldPin = v.Pin.Image
                 end
                 
-                v.Pin.Image = getgenv().CB_Pin or ""
+                v.Pin.Image = getgenv().CB_Pin or oldPin
+                v.Pin:GetPropertyChangedSignal("Image"):Connect(function()
+                    v.Pin.Image = getgenv().CB_Pin or oldPin
+                end)
+                v.Pin:GetPropertyChangedSignal("Visible"):Connect(function()
+                    v.Pin.Visible = getgenv().CB_Pin and true or false
+                end)
             end
         end
     end)
