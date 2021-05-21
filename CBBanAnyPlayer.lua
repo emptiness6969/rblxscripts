@@ -132,7 +132,7 @@ if GUI then
                 if not rawget(spoofed, v) then
                     table.insert(spoofed, v)
 
-                    for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Image"))) do
+                    for i2,v2 in pairs(getconnections(v.Pin:GetPropertyChangedSignal("Image"))) do
                         v2:Disable()
                     end
                     for i2,v2 in pairs(getconnections(v.Changed)) do
