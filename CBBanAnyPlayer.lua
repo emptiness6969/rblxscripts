@@ -1,4 +1,3 @@
-
 -- // initialize
 
 local Players = game:GetService("Players")
@@ -15,6 +14,7 @@ local playerId = Players:GetUserIdFromNameAsync(getgenv().PlayerName)
 local exploiterId = Players:GetUserIdFromNameAsync(getgenv().ExploiterName)
 
 local spoofed = {}
+local oldPin
 
 local GUI
 if game.GameId == 115797356 then
@@ -75,6 +75,9 @@ mt.__index = newcclosure(function(self, k)
         if k == "Text" then
             return getgenv().ExploiterName
         elseif k == "Image" then
+            if self.Name == "Pin" then
+                return oldPin
+            end
             return string.gsub(__oldIndex(self, k), playerId, exploiterId)
         end
     end
@@ -98,6 +101,13 @@ mt.__newindex = newcclosure(function(self, k, v)
                 return __oldNewIndex(self, k, string.gsub(v, getgenv().ExploiterName, getgenv().PlayerName))
             end
         elseif GUI and self == GUI.Spectate.PlayerBox.PlayerPin and (string.find(GUI.Spectate.PlayerBox.PlayerName.Text, getgenv().ExploiterName) or string.find(GUI.Spectate.PlayerBox.PlayerName.Text, getgenv().PlayerName)) then
+            if not rawget(spoofed, v) then
+                table.insert(spoofed, v)
+            end
+            if not oldPin then
+                oldPin = __oldIndex(self, "Image")
+            end
+
             __oldNewIndex(self, "Image", getgenv().CB_Pin or GUI.Spectate.PlayerBox.PlayerPin.Image)
             __oldNewIndex(self, "Visible", getgenv().CB_Pin and true or false)
             return
@@ -117,6 +127,9 @@ if GUI then
             if (string.find(v.player.Text, getgenv().ExploiterName) or string.find(v.player.Text, getgenv().PlayerName)) and v:FindFirstChild("Pin") then
                 if not rawget(spoofed, v) then
                     table.insert(spoofed, v)
+                end
+                if not oldPin then
+                    oldPin = v.Pin.Image
                 end
                 
                 v.Pin.Image = getgenv().CB_Pin or ""
