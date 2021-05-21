@@ -48,10 +48,6 @@ game.DescendantAdded:Connect(function(v)
             table.insert(spoofed, v)
         end
 
-        if not sFound then
-            table.insert(spoofed, {v, v.Text})
-        end
-
         for i2,v2 in pairs(getconnections(v:GetPropertyChangedSignal("Text"))) do
             v2:Disable()
         end
