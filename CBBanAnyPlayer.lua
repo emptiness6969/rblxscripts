@@ -1,6 +1,3 @@
-getgenv().ExploiterName = "hexhub_22kO43" -- player to spoof
-getgenv().PlayerName = "deadxd2020" -- target username
-getgenv().CB_Pin = "rbxassetid://4434228836" -- spoof a pin
 
 -- // initialize
 
