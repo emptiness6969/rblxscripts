@@ -1,3 +1,9 @@
+-- nice attempt rolve!!!!
+
+for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+    v:Disable()
+end
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
