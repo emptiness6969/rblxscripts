@@ -1,3 +1,11 @@
+--[[
+example:
+getgenv().ExploiterName = "Janosik2017"
+getgenv().PlayerName = "noob"
+getgenv().CB_Pin = "rbxassetid://1158104700"
+]]
+
+-- checked after a few months, seemed like there was a flaw in my script and so i quickly fixed it... nice attempt rolve!!!!
 -- nice attempt rolve!!!!
 
 for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
@@ -79,6 +87,11 @@ mt.__index = newcclosure(function(self, k)
                 return getgenv().ExploiterName
             elseif k == "Image" then
                 if self.Name == "Pin" then
+                    for i,v in pairs(spoofed) do
+                        if v == self then
+                            v.Visible = false    
+                        end
+                    end
                     return oldPin
                 end
                 local x = filterString(filterString(__oldIndex(self, k), playerId, exploiterId), getgenv().PlayerName, getgenv().ExploiterName)
@@ -92,8 +105,8 @@ end)
 mt.__newindex = newcclosure(function(self, k, v)
     if not checkcaller() then
         if (game.IsA(self, "TextLabel") or game.IsA(self, "TextButton")) and k == "Text" then
-            if not rawget(spoofed, v) then
-                table.insert(spoofed, v)
+            if not rawget(spoofed, self) then
+                table.insert(spoofed, self)
             end
 
             if string.find(v, getgenv().ExploiterName) then
@@ -110,8 +123,8 @@ mt.__newindex = newcclosure(function(self, k, v)
                 return __oldNewIndex(self, k, filterString(v, getgenv().ExploiterName, getgenv().PlayerName))
             end
         elseif GUI and self == GUI.Spectate.PlayerBox.PlayerPin and (string.find(GUI.Spectate.PlayerBox.PlayerName.Text, getgenv().ExploiterName) or string.find(GUI.Spectate.PlayerBox.PlayerName.Text, getgenv().PlayerName)) then
-            if not rawget(spoofed, v) then
-                table.insert(spoofed, v)
+            if not rawget(spoofed, self) then
+                table.insert(spoofed, self)
             end
             if not oldPin then
                 oldPin = __oldIndex(self, "Image")
